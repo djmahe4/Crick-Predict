@@ -27,6 +27,7 @@ def matches():#dont get confused it is for debugging last matches
 # Streamlit UI
 st.title("Dream11 Cricket Review")
 st.write(datetime.now())
+st.write("Warning!Local time and time of the website may vary, verify the match dates carefully")
 contents=matches()
 #file=open("leagues.json","r",encoding="utf-8")
 #contents=json.load(file)
