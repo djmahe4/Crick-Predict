@@ -10,7 +10,7 @@ from datetime import datetime
 # Streamlit UI
 st.title("Dream11 Cricket")
 st.write(datetime.now())
-st.write("Warning!Local time and time of the website may vary, verify the match dates carefully")
+st.write(":redWarning!Local time and time of the website may vary, verify the match dates carefully")
 contents=matches()
 #file=open("leagues.json","r",encoding="utf-8")
 #contents=json.load(file)
