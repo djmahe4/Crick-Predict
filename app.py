@@ -5,9 +5,11 @@ import requests
 import json
 from test import *
 from numerology import main as numer
+from datetime import datetime
 
 # Streamlit UI
 st.title("Dream11 Cricket")
+st.write(datetime.now())
 contents=matches()
 #file=open("leagues.json","r",encoding="utf-8")
 #contents=json.load(file)
