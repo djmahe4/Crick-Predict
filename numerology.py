@@ -196,7 +196,12 @@ def biorhythm_chart(days, combined):
     biorhythm_data.append([math.sin(2 * math.pi * i / combined) for i in range(days - 15, days + 15)])
 
     return biorhythm_data[0]
-def get_date_range(days_before=15, days_after=14):
+def round_to_binary(value, threshold=0.999):
+    if abs(value) >= threshold:
+        return 1
+    elif abs(value)<=0.000:
+        return 0
+def get_date_range(today="",days_before=-15, days_after=14):
   """
   Finds today's date and a range of dates before and after in dd-mm-yyyy format.
 
@@ -207,24 +212,27 @@ def get_date_range(days_before=15, days_after=14):
   Returns:
       list: A list of strings representing the dates in dd-mm-yyyy format.
   """
-  today = date.today()
+  if today=="":
+    today = date.today()
   date_range = []
 
   # Add date 15 days before today
   #date_range.append(today - timedelta(days=days_before))
-  for i in range(-15, days_after +1):
+  for i in range(days_before, days_after +1):
     date_range.append(today - timedelta(days=i))
   formatted_dates = [date.strftime("%d-%m-%Y") for date in date_range]
 
   return formatted_dates
 
 def main(url,st):
+    #global mdate
     #with open("data.txt", "r") as f:
         #x = f.read()
         #n = x.split()
     # Get the date range
-    date_list = get_date_range()
-    playersd=match11(url)
+
+    playersd,mdate=match11(url)
+    st.write("Match Date:",mdate)
     #matchid=url
     print(playersd)
     #date_of_birth,name=usedata(y,n)
@@ -260,6 +268,12 @@ def main(url,st):
         days = days_since_birth(formatted_date_str)
         bio = biorhythm_chart(days,comb)
         di={}
+        # Parse the original date string to a datetime object
+        date_obj = dt.strptime(mdate, "%B %d, %Y")
+        # Convert the datetime object to the desired format
+        formatted_date_str = date_obj.strftime("%Y-%m-%d")
+        today = dt.strptime(formatted_date_str, "%Y-%m-%d")
+        date_list = get_date_range(today)
         for i,date in enumerate(date_list):
             di.update({date:bio[i]})
         #st.write(di)
@@ -268,7 +282,8 @@ def main(url,st):
         new = pd.DataFrame(di.items(), columns=["Date", "Values"])
         st.table(new)
         #plot_biorhythm_chart(bio, date_list)
-        ck=16 #ck should be set to 15 by default
+        ck=15 #ck should be set to 15 by default
+        st.write("BIO:",bio[ck])
         if abs(float(f"{bio[ck - 1]:.4f}")) == abs(float(f"{bio[ck + 1]:.4f}")):
             st.write("Warning!! Prediction may fail!")
         #st.write(bio)
@@ -307,6 +322,9 @@ def main(url,st):
             st.write("Great..")
         else:
             st.write("Flop :(")
+        #if round_to_binary(bio[ck-1]) == 0 or round_to_binary(bio[ck+1])==0 or round_to_binary(bio[ck-1]) == 1 or round_to_binary(bio[ck+1])==1:
+            #st.write("Bingo..")
+            #st.write(bio[ck-1],bio[ck+1])
         for i in ls[-4:]:
             if ls[-4:].count(i) > 1:
                 st.write("Pipe!")
