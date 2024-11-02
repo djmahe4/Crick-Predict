@@ -282,7 +282,7 @@ def main(url,st):
         new = pd.DataFrame(di.items(), columns=["Date", "Values"])
         st.table(new)
         #plot_biorhythm_chart(bio, date_list)
-        ck=15 #ck should be set to 15 by default
+        ck=16 #ck should be set to 15 by default
         st.write("BIO:",bio[ck])
         if abs(float(f"{bio[ck - 1]:.4f}")) == abs(float(f"{bio[ck + 1]:.4f}")):
             st.write("Warning!! Prediction may fail!")
