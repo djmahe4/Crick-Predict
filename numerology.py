@@ -1,5 +1,5 @@
 import time
-import math
+import math,pytz
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib
@@ -13,9 +13,41 @@ import requests
 from test import *
 import os
 import json
+import streamlit as st
 
+def convert_utc_timestamp_to_local(utc_datetime, timezone_str):
+    """
+    Converts a UTC timestamp (in seconds since the epoch) to a datetime object in a specified timezone.
 
-def plot_biorhythm_chart(combined_points, dates,name, st,cycle_label="Combined"):
+    Args:
+        utc_timestamp (int): A UTC timestamp representing seconds since the epoch (1970-01-01 00:00:00 UTC).
+        timezone_str (str): A string representing the timezone to convert to (e.g., 'America/Los_Angeles').
+
+    Returns:
+        str: A formatted string representing the local time in the specified timezone,
+             in the format 'YYYY-MM-DDTHH:MM:SS.ffffff'.  Returns None if there is an error.
+    """
+    try:
+
+        # Convert to the specified timezone
+        local_timezone = pytz.timezone(timezone_str)
+        local_datetime = utc_datetime.astimezone(local_timezone)
+
+        # Format the local datetime object to a string
+        formatted_local_datetime = local_datetime.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        #st.write(formatted_local_datetime,convert_timestamp(utc_timestamp))
+        return formatted_local_datetime
+
+    except ValueError as e:
+        print(f"Error: Invalid timestamp or timezone. {e}")
+        return None
+    except pytz.exceptions.UnknownTimeZoneError as e:
+        print(f"Error: Invalid timezone: {timezone_str}. {e}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
+def plot_biorhythm_chart(combined_points, dates,name,cycle_label="Combined"):
   """Plots the biorhythm chart with dates using matplotlib.pyplot."""
 
   if len(combined_points) != len(dates):
@@ -39,7 +71,12 @@ def plot_biorhythm_chart(combined_points, dates,name, st,cycle_label="Combined")
   #return plt
   #plt.show()
   st.pyplot(fig)
-
+def load_fname(soup):
+    so = json.loads(soup.find("script", attrs={'id':'__NEXT_DATA__'}).contents[0])
+    try:
+        return so['props']['appPageProps']['data']['player']['fullName']
+    except:
+        return None
 def birth_get(diction={"kyle-simmonds":"https://www.espncricinfo.com/cricketers/kyle-simmonds-550251"}):
     bdet={}
     for name,url in diction.items():
@@ -51,7 +88,9 @@ def birth_get(diction={"kyle-simmonds":"https://www.espncricinfo.com/cricketers/
         try:
         # Extract the DOB text
             dob_text = span[1].find('p').text.strip()
-            bdet.update({name:dob_text})
+            nam=load_fname(soup)
+            if name:
+                bdet.update({nam:dob_text})
         except IndexError:
             print(span)
     print(bdet)
@@ -72,9 +111,9 @@ def usedata(name,n):
                 sr+=i+"-"
             return sr[:-1],pname
 
-def days_since_birth(date_of_birth):
+def days_since_birth(date_of_birth,today=date.today()):
     """Calculates the number of days since birth considering leap years"""
-    today = date.today()
+    #today = date.today()
     # Extract year, month, day from the provided date of birth string
     #date_str = "1995-10-19T00:00:00.000Z"
 
@@ -90,7 +129,7 @@ def days_since_birth(date_of_birth):
     birth_date = date(year, month, day)
 
     # Calculate the difference between today and date of birth in days
-    time_delta = today - birth_date
+    time_delta = dt.date(today) - birth_date
     return time_delta.days
 
 
@@ -169,7 +208,7 @@ def calculate_moolank(date_of_birth):
   #return sum
   return sum
 
-def combine_numbers( moolank,bhagyank, naamank,st):
+def combine_numbers( moolank,bhagyank, naamank):
     """Combines Moolank, Bhagyank, and Naamank with Fibonacci offset (not scientific)"""
     #combined = (moolank * 3 + bhagyank * 2 + normalized_naamank)  # / 6
     #combined= moolank+(bhagyank*naamank)
@@ -224,7 +263,7 @@ def get_date_range(today="",days_before=-15, days_after=14):
 
   return formatted_dates
 
-def main(url,st):
+def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1459031/pakistan-vs-new-zealand-1st-match-group-a-1466414/live-cricket-score"):
     #global mdate
     #with open("data.txt", "r") as f:
         #x = f.read()
@@ -232,12 +271,15 @@ def main(url,st):
     # Get the date range
 
     playersd,mdate=match11(url)
-    st.write("Match Date:",mdate)
+    st.write("Match Date:",mdate[0])
+    st.write("Timezone:",mdate[1])
+    st.divider()
     #matchid=url
     print(playersd)
     #date_of_birth,name=usedata(y,n)
     data=birth_get(playersd)
     for name, date_of_birth in data.items():
+        st.markdown(f"#{name}")
         # Extract just the date part
         date_part = date_of_birth.split(',')[0:2]  # ["January 06", "1994"]
         date_str = ', '.join(date_part)
@@ -264,12 +306,14 @@ def main(url,st):
         st.write("Moolank:",moolank)
         # Biorhythm chart parameters (adjust as needed)
         # cycles = [23, 28, 33]  # Physical,
-        comb,typ = combine_numbers( moolank,bhagyank, naamank,st)
-        days = days_since_birth(formatted_date_str)
+        comb,typ = combine_numbers( moolank,bhagyank, naamank)
+        match_date = convert_utc_timestamp_to_local(dt.strptime(mdate[0][:-1], "%Y-%m-%dT%H:%M:%S.%f"), mdate[1])
+        days = days_since_birth(formatted_date_str,dt.strptime(match_date, "%Y-%m-%dT%H:%M:%S.%f"))
         bio = biorhythm_chart(days,comb)
         di={}
+
         # Parse the original date string to a datetime object
-        date_obj = dt.strptime(mdate, "%B %d, %Y")
+        date_obj = dt.strptime(match_date, "%Y-%m-%dT%H:%M:%S.%f")
         # Convert the datetime object to the desired format
         formatted_date_str = date_obj.strftime("%Y-%m-%d")
         today = dt.strptime(formatted_date_str, "%Y-%m-%d")
@@ -282,7 +326,7 @@ def main(url,st):
         new = pd.DataFrame(di.items(), columns=["Date", "Values"])
         st.table(new)
         #plot_biorhythm_chart(bio, date_list)
-        ck=15 #ck should be set to 15 by default
+        ck=16 #ck should be set to 15 by default
         st.write("BIO:",bio[ck])
         if abs(float(f"{bio[ck - 1]:.4f}")) == abs(float(f"{bio[ck + 1]:.4f}")):
             st.write("Warning!! Prediction may fail!")
@@ -329,7 +373,7 @@ def main(url,st):
             if ls[-4:].count(i) > 1:
                 st.write("Pipe!")
                 break
-        plot_biorhythm_chart(list(di.values()),list(di.keys()),name,st)
+        plot_biorhythm_chart(list(di.values()),list(di.keys()),name)
         st.write("-"*58)
         st.write("-" * 58)
         #save_plt(plt,matchid,name)

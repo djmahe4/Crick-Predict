@@ -29,4 +29,4 @@ if st.button("Start"):
     st.write(f"Selected analysis type: {choice}")
     print(choice)
     if choice=="numerology":
-        numer(match_url,st)
+        numer(match_url)
