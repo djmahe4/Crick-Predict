@@ -279,7 +279,7 @@ def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1
     #date_of_birth,name=usedata(y,n)
     data=birth_get(playersd)
     for name, date_of_birth in data.items():
-        st.markdown(f"#{name}")
+        st.markdown(f"# {name}")
         # Extract just the date part
         date_part = date_of_birth.split(',')[0:2]  # ["January 06", "1994"]
         date_str = ', '.join(date_part)
