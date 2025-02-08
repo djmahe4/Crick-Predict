@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 import re,json
-from icecream import ic
+#from icecream import ic
 import streamlit as st
 def matches():
     response = requests.get('https://www.espncricinfo.com/live-cricket-match-schedule-fixtures')
