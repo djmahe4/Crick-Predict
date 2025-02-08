@@ -32,4 +32,5 @@ def app():
         print(choice)
         if choice=="numerology":
             numer(match_url)
-st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓")])
+if __name__=="__main__":
+    st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓")])
