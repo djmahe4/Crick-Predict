@@ -33,4 +33,5 @@ def app():
         if choice=="numerology":
             numer(match_url)
 if __name__=="__main__":
-    st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓")])
+    pg=st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓")])
+    pg.run()
