@@ -19,37 +19,15 @@ def match11sub(url):
     #global st
     data=scraper(url)
     #ic(data)
+    dic={}
     soup = BeautifulSoup(data, "html.parser")
-    so=soup.find_all("div",class_="ds-text-tight-m ds-font-regular ds-text-typo-mid3")
+    so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
+    for player in so['props']["appPageProps"]["data"]["content"]["matchPlayers"]["teamPlayers"][0]['players']:
+        dic.update({player["player"]["longName"]:f"https://www.espncricinfo.com/cricketers/{player['player']['slug']}-{player['player']['objectId']}"})
+    for player in so['props']["appPageProps"]["data"]["content"]["matchPlayers"]["teamPlayers"][1]['players']:
+        dic.update({player["player"]["longName"]:f"https://www.espncricinfo.com/cricketers/{player['player']['slug']}-{player['player']['objectId']}"})
 
-    #print(",".join(so[0].text.split(",")[-3:-1])[1:])
-    #mdate=",".join(so[0].text.split(",")[-3:-1])[1:]
-    #mdate=get_loc(url)
-    # Find all player elements with the specified class
-    players = soup.find_all('a',
-                            class_='ds-inline-flex ds-items-start ds-leading-none')  # Extract player names and hrefs
-    playerd = {}
-    # match_format = soup.find_all('span', class_='ds-text-tight-s ds-font-regular')#.text.strip()
-    # try:
-    # match = re.findall(r'\((.*?)\)', match_format[0].text)
-    # print(f"Match Format: {match[0]}")
-    # except IndexError:
-    # print(match_format,"notfound")
-    # finally:
-    for player in players:
-        player_name = player.find('span').text.strip()
-        # Replace " (c)" only if it exists
-        if re.search(r' \(c\)', player_name):
-            player_name = re.sub(r' \(c\)', '', player_name)
-            # Replace " †" only if it exists
-        if re.search(r' †', player_name):
-            player_name = re.sub(r' †', '', player_name)
-        # print(player_name)
-        href = player.get('href')
-        # print(f"Player: {player_name}, Href: {href}")
-        if "cricketers" in href:
-            playerd.update({player_name: f"https://www.espncricinfo.com{href}"})
-    return playerd
+    return dic
 def match11(url='https://www.espncricinfo.com/series/csa-4-day-series-division-1-2024-25-1444755/dolphins-vs-western-province-1st-match-1444880/full-scorecard',cond="match-playing-xi"):
     #global st
     urll=url.split("/")
