@@ -269,7 +269,7 @@ def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1
     st.write("Timezone:",mdate[1])
     st.divider()
     #matchid=url
-    if len(playersd==2):
+    if len(playersd)==2:
         playersd=playersd[0]
     print(playersd)
     #date_of_birth,name=usedata(y,n)
