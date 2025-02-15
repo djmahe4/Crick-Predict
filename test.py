@@ -22,10 +22,13 @@ def match11sub(url):
     dic={}
     soup = BeautifulSoup(data, "html.parser")
     so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
-    for player in so['props']["appPageProps"]["data"]["content"]["matchPlayers"]["teamPlayers"][0]['players']:
-        dic.update({player["player"]["longName"]:f"https://www.espncricinfo.com/cricketers/{player['player']['slug']}-{player['player']['objectId']}"})
-    for player in so['props']["appPageProps"]["data"]["content"]["matchPlayers"]["teamPlayers"][1]['players']:
-        dic.update({player["player"]["longName"]:f"https://www.espncricinfo.com/cricketers/{player['player']['slug']}-{player['player']['objectId']}"})
+    try:
+        for player in so['props']["appPageProps"]["data"]["content"]["matchPlayers"]["teamPlayers"][0]['players']:
+            dic.update({player["player"]["longName"]:f"https://www.espncricinfo.com/cricketers/{player['player']['slug']}-{player['player']['objectId']}"})
+        for player in so['props']["appPageProps"]["data"]["content"]["matchPlayers"]["teamPlayers"][1]['players']:
+            dic.update({player["player"]["longName"]:f"https://www.espncricinfo.com/cricketers/{player['player']['slug']}-{player['player']['objectId']}"})
+    except IndexError:
+        return {}
 
     return dic
 def match11(url='https://www.espncricinfo.com/series/csa-4-day-series-division-1-2024-25-1444755/dolphins-vs-western-province-1st-match-1444880/full-scorecard',cond="match-playing-xi"):
