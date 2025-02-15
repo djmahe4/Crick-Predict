@@ -271,7 +271,7 @@ def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1
     #matchid=url
     if len(playersd)==2:
         playersd=playersd[0]
-    print(playersd)
+    #print(playersd)
     #date_of_birth,name=usedata(y,n)
     st.write(playersd)
     data=birth_get(playersd)
