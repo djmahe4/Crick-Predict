@@ -87,7 +87,7 @@ def debug_matches(url='https://www.espncricinfo.com/live-cricket-match-results')
     #ic(so)
     mids={}
     for i in so['props']['appPageProps']['data']['data']['content']['matches']:
-        mids.update({f"{i['teams'][0]['team']['name']} vs {i['teams'][1]['team']['name']}":f"https://www.espncricinfo.com/series/{i['series']['slug']}-{i['series']['objectId']}/{i['slug']}-{i['objectId']}/live-cricket-score"})
+        mids.update({f"{i['teams'][0]['team']['name']} vs {i['teams'][1]['team']['name']} @{i['startDate'][:11]}":f"https://www.espncricinfo.com/series/{i['series']['slug']}-{i['series']['objectId']}/{i['slug']}-{i['objectId']}/live-cricket-score"})
 
     #ic(mids)
     return mids
