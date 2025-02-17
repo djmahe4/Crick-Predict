@@ -8,6 +8,16 @@ from test import *
 from numerology import main as numer
 from datetime import datetime
 from debug import debug
+import pandas as pd
+def reset():
+    st.session_state.match=None
+    st.session_state.playerd={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
+def data_down():
+    if st.session_state.playerd!={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}:
+        edit=st.data_editor(pd.DataFrame(st.session_state.playerd))
+        st.download_button("Download",edit.to_csv(),file_name=f"{st.session_state.match}.csv")
+    else:
+        st.error("Select match and start to get biorythm values!!")
 def app():
     # Streamlit UI
     st.title("Dream11 Cricket")
@@ -24,14 +34,24 @@ def app():
     print()
     match_url=choices[choice]
     st.write(f"Selected match: {choice}")
+    st.session_state.match = choice
     st.write(f"Match URL: {match_url}")
     types_of_analysis=["numerology"]
-    choice=st.selectbox("Analysis Type",types_of_analysis)
+    choice2=st.selectbox("Analysis Type",types_of_analysis)
     if st.button("Start"):
-        st.write(f"Selected analysis type: {choice}")
-        print(choice)
-        if choice=="numerology":
+        st.write(f"Selected analysis type: {choice2}")
+        print(choice2)
+        if choice2=="numerology":
             numer(match_url)
+    if st.button("Reset"):
+        reset()
+        if st.session_state.match==None:
+            st.success("Cleared!")
 if __name__=="__main__":
-    pg=st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓")])
+    if "match" not in st.session_state:
+        st.session_state.match=None
+    if 'playerd' not in st.session_state:
+        st.session_state.playerd={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
+    pg=st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓"),
+                      st.Page(data_down,title="Data",icon="ℹ")])
     pg.run()

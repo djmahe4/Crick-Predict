@@ -327,8 +327,13 @@ def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1
         new = pd.DataFrame(di.items(), columns=["Date", "Values"])
         st.table(new)
         #plot_biorhythm_chart(bio, date_list)
-        ck=16 #ck should be set to 15 by default
+        ck=15 #ck should be set to 15 by default
         st.write("BIO:",bio[ck])
+        st.session_state.playerd['player'].append(name)
+        st.session_state.playerd['prev'].append(bio[16])
+        st.session_state.playerd['today'].append(bio[15])
+        st.session_state.playerd['tom'].append(bio[14])
+        st.session_state.playerd['dream'].append(False)
         if abs(float(f"{bio[ck - 1]:.4f}")) == abs(float(f"{bio[ck + 1]:.4f}")):
             st.write("Warning!! Prediction may fail!")
         #st.write(bio)
