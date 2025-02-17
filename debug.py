@@ -32,5 +32,5 @@ def debug():
         st.session_state.match = choice
         st.write(f"Selected analysis type: {choice2}")
         print(choice2)
-        if choice=="numerology":
+        if choice2=="numerology":
             numer(match_url)
