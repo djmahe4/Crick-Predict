@@ -27,9 +27,10 @@ def debug():
     st.write(f"Selected match: {choice}")
     st.write(f"Match URL: {match_url}")
     types_of_analysis=["numerology"]
-    choice=st.selectbox("Analysis Type",types_of_analysis)
+    choice2=st.selectbox("Analysis Type",types_of_analysis)
     if st.button("Start"):
-        st.write(f"Selected analysis type: {choice}")
-        print(choice)
+        st.session_state.match = choice
+        st.write(f"Selected analysis type: {choice2}")
+        print(choice2)
         if choice=="numerology":
             numer(match_url)
