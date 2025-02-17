@@ -62,7 +62,7 @@ def scraper(url):
     #ic(details.keys())
     return details
 #https://www.espncricinfo.com/live-cricket-match-schedule-fixtures
-def matches(url='https://www.espncricinfo.com/live-cricket-match-results'):
+def matches(url='https://www.espncricinfo.com/live-cricket-match-schedule-fixtures'):
 
     data=scraper(url)
     soup = BeautifulSoup(data, "html.parser")
@@ -78,7 +78,7 @@ def matches(url='https://www.espncricinfo.com/live-cricket-match-results'):
     #ic(mids)
     return mids
 #https://www.espncricinfo.com/live-cricket-match-results
-def debug_matches(url='https://www.espncricinfo.com/live-cricket-match-schedule-fixtures'):
+def debug_matches(url='https://www.espncricinfo.com/live-cricket-match-results'):
 
     data=scraper(url)
     soup = BeautifulSoup(data, "html.parser")
