@@ -34,11 +34,11 @@ def app():
     print()
     match_url=choices[choice]
     st.write(f"Selected match: {choice}")
-    st.session_state.match = choice
     st.write(f"Match URL: {match_url}")
     types_of_analysis=["numerology"]
     choice2=st.selectbox("Analysis Type",types_of_analysis)
     if st.button("Start"):
+        st.session_state.match = choice
         st.write(f"Selected analysis type: {choice2}")
         print(choice2)
         if choice2=="numerology":
