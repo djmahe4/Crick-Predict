@@ -259,6 +259,10 @@ def get_date_range(today="",days_before=-15, days_after=14):
 @st.cache_data
 def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1459031/pakistan-vs-new-zealand-1st-match-group-a-1466414/live-cricket-score"):
     #global mdate
+    if "match" not in st.session_state:
+        st.session_state.match=None
+    if 'playerd' not in st.session_state:
+        st.session_state.playerd={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
     #with open("data.txt", "r") as f:
         #x = f.read()
         #n = x.split()
