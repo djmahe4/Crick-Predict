@@ -48,10 +48,7 @@ def app():
         if st.session_state.match==None:
             st.success("Cleared!")
 if __name__=="__main__":
-    if "match" not in st.session_state:
-        st.session_state.match=None
-    if 'playerd' not in st.session_state:
-        st.session_state.playerd={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
+    
     pg=st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓"),
                       st.Page(data_down,title="Data",icon="ℹ")])
     pg.run()
