@@ -87,6 +87,8 @@ def birth_get(diction={"kyle-simmonds":"https://www.espncricinfo.com/cricketers/
             so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
             bdata.update({so['props']["appPageProps"]["data"]['player']['fullName']:
                               so['props']["appPageProps"]["data"]['player']['dateOfBirth']})
+            st.session_state.names.update({so['props']["appPageProps"]["data"]['player']['longName']:
+                                               so['props']["appPageProps"]["data"]['player']['fullName']})
     #ic(bdata)
     return bdata
 
@@ -263,6 +265,10 @@ def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1
         st.session_state.match=None
     if 'playerd' not in st.session_state:
         st.session_state.playerd={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
+    if 'names' not in st.session_state:
+        st.session_state.names={}
+    if 'url' not in st.session_state:
+        st.session_state.url = url
     #with open("data.txt", "r") as f:
         #x = f.read()
         #n = x.split()

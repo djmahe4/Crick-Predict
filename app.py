@@ -12,10 +12,26 @@ import pandas as pd
 def reset():
     st.session_state.match=None
     st.session_state.playerd={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
+    st.session_state.url=None
+    st.session_state.names = {}
 def data_down():
+
     if st.session_state.playerd!={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}:
-        edit=st.data_editor(pd.DataFrame(st.session_state.playerd))
-        st.download_button("Download",edit.to_csv(),file_name=f"{st.session_state.match}.csv")
+        st.write("/".join(st.session_state.url.split("/")[:-1]) + "/match-impact-player")
+        try:
+            st.write(st.session_state.names)
+            x=pd.read_html("/".join(st.session_state.url.split("/")[:-1]) + "/match-impact-player")[0]
+            st.dataframe(x)
+            first11=x.head(11)['Player']
+            checker=[st.session_state.names[player] for player in first11]
+            y=pd.DataFrame(st.session_state.playerd)
+            y['dream']=y['player'].isin(checker)
+            edit = st.data_editor(y)
+            st.download_button("Download", edit.to_csv(), file_name=f"{st.session_state.match}.csv")
+        except Exception as e:
+            st.error(f"{e}: MVP List not found!")
+            edit=st.data_editor(pd.DataFrame(st.session_state.playerd))
+            st.download_button("Download",edit.to_csv(),file_name=f"{st.session_state.match}.csv")
     else:
         st.error("Select match and start to get biorythm values!!")
 def app():
@@ -38,6 +54,7 @@ def app():
     types_of_analysis=["numerology"]
     choice2=st.selectbox("Analysis Type",types_of_analysis)
     if st.button("Start"):
+        st.session_state.url=match_url
         st.session_state.match = choice
         st.write(f"Selected analysis type: {choice2}")
         print(choice2)
@@ -48,7 +65,6 @@ def app():
         if st.session_state.match==None:
             st.success("Cleared!")
 if __name__=="__main__":
-    
     pg=st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓"),
                       st.Page(data_down,title="Data",icon="ℹ")])
     pg.run()

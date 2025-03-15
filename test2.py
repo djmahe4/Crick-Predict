@@ -8,6 +8,7 @@ import http.client
 import json
 from urllib.parse import urlparse
 import re
+from icecream import ic
 
 def just_test(url='https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1459031/pakistan-vs-new-zealand-1st-match-group-a-1466414/live-cricket-score'):
     response = requests.get(url)
@@ -17,7 +18,7 @@ def just_test(url='https://www.espncricinfo.com/series/icc-champions-trophy-2024
     with open("data.json" ,"w") as file:
         js=json.dumps(so,indent=2)
         file.write(js)
-    ic(so)
+    #ic(so)
 def just_test3(url='https://www.espncricinfo.com/series/csa-4-day-series-division-1-2024-25-1444755/dolphins-vs-western-province-1st-match-1444880/match-playing-xi'):
     data=scraper(url)
     soup = BeautifulSoup(data, "html.parser")
@@ -25,7 +26,7 @@ def just_test3(url='https://www.espncricinfo.com/series/csa-4-day-series-divisio
     with open("data.json" ,"w") as file:
         js=json.dumps(so,indent=2)
         file.write(js)
-    ic(so)
+    #ic(so)
 def just_test2(url='https://www.espncricinfo.com/cricketers/mitchell-santner-502714'):
     response = requests.get(url)
     data = response.text
@@ -45,8 +46,8 @@ def get_dat():
     with open("data.json",'r') as file:
         js=json.loads(file.read())
         #ic(js,type(js))
-    ic(js.keys())
-    ic(js['props']['appPageProps'])
+    #ic(js.keys())
+    #ic(js['props']['appPageProps'])
     with open("main.json",'w') as file:
         njs=json.dumps(js['props']['appPageProps'],indent=2)
         file.write(njs)
@@ -56,11 +57,11 @@ def get_dat2():
     with open("main.json", 'r') as file:
         js = json.loads(file.read())
     #for j in js['data']['data']:
-    ic(js['data']['data']['match'].keys())
+    #ic(js['data']['data']['match'].keys())
     try:
         if js['data']['data']['match']['objectId'] == int(id):
             for i in js['data']['data']['match']:
-                ic(i, js['data']['data']['match'][i])
+                #ic(i, js['data']['data']['match'][i])
                 return js['data']['data']['match']['startTime'],js['data']['data']['match']['ground']['town']['timezone']
     except KeyError:
         return
@@ -68,8 +69,8 @@ def get_dat4(url='https://www.espncricinfo.com/cricketers/yaseen-vallie-327831')
     data=scraper(url)
     soup = BeautifulSoup(data, "html.parser")
     so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
-    ic(so['props']["appPageProps"]["data"]['player'].keys())
-    ic(so['props']["appPageProps"]["data"]['player']['dateOfBirth'],so['props']["appPageProps"]["data"]['player']['fullName'])
+    #ic(so['props']["appPageProps"]["data"]['player'].keys())
+    #ic(so['props']["appPageProps"]["data"]['player']['dateOfBirth'],so['props']["appPageProps"]["data"]['player']['fullName'])
 
 #print(get_dat2())
 def get_loc(url='https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1459031/pakistan-vs-new-zealand-1st-match-group-a-1466414/live-cricket-score'):
@@ -138,7 +139,7 @@ def match11(url='https://www.espncricinfo.com/series/csa-4-day-series-division-1
     urll[-1]='live-cricket-score'
     nurl="/".join(urll)
     mdate=get_loc(nurl)
-    ic(playerd,mdate)
+    #ic(playerd,mdate)
     return playerd,mdate
 def get_bdata(players={'Andile Simelane': 'https://www.espncricinfo.com/cricketers/andile-simelane-1070754',
               'Beuran Hendricks': 'https://www.espncricinfo.com/cricketers/beuran-hendricks-379927',
@@ -164,14 +165,26 @@ def get_bdata(players={'Andile Simelane': 'https://www.espncricinfo.com/crickete
               'Yaseen Vallie': 'https://www.espncricinfo.com/cricketers/yaseen-vallie-327831'}):
     bdata={}
     for player in players:
-        time.sleep(1)
         with st.spinner(f"Getting bdata of {player}"):
+            time.sleep(1)
             data=scraper(players[player])
             soup = BeautifulSoup(data, "html.parser")
             so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
             bdata.update({so['props']["appPageProps"]["data"]['player']['fullName']:so['props']["appPageProps"]["data"]['player']['dateOfBirth']})
-    ic(bdata)
+            st.session_state.names.update({so['props']["appPageProps"]["data"]['player']['longName']:so['props']["appPageProps"]["data"]['player']['fullName']})
+            #ic(so['props']["appPageProps"]["data"]['player']['longName'],so['props']["appPageProps"]["data"]['player']['name'])
+    #ic(bdata)
     return bdata
-
+#get_bdata()
 #match11()
-get_dat4()
+#get_dat4()
+
+    #ic(bdata)
+def tester():
+    data = scraper("https://www.espncricinfo.com/cricketers/shikha-pandey-442145")
+    soup = BeautifulSoup(data, "html.parser")
+    so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
+
+    ic(so['props']["appPageProps"]["data"]['player'])
+# ic(bdata)
+#tester()
