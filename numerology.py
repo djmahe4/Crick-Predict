@@ -80,9 +80,10 @@ def load_fname(soup):
 def birth_get(diction={"kyle-simmonds":"https://www.espncricinfo.com/cricketers/kyle-simmonds-550251"}):
     bdata = {}
     for player in diction:
-        time.sleep(1)
         with st.spinner(f"Getting bdata of {player}"):
+            time.sleep(1)
             data = scraper(diction[player])
+            st.write(data)
             soup = BeautifulSoup(data, "html.parser")
             so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
             bdata.update({so['props']["appPageProps"]["data"]['player']['fullName']:
@@ -283,7 +284,7 @@ def main(url="https://www.espncricinfo.com/series/icc-champions-trophy-2024-25-1
         playersd=playersd[0]
     #print(playersd)
     #date_of_birth,name=usedata(y,n)
-    st.write(playersd)
+    #st.write(playersd)
     data=birth_get(playersd)
     for name, date_of_birth in data.items():
         st.markdown(f"# {name}")
