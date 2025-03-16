@@ -14,6 +14,7 @@ from test import *
 import os
 import json
 import streamlit as st
+import urllib
 
 def convert_utc_timestamp_to_local(utc_datetime, timezone_str):
     """
@@ -82,7 +83,8 @@ def birth_get(diction={"kyle-simmonds":"https://www.espncricinfo.com/cricketers/
     for player in diction:
         with st.spinner(f"Getting bdata of {player}"):
             time.sleep(1)
-            st.write(requests.get(diction[player]).text)
+            st.write(urllib.requests.urlopen(diction[player]))
+            #st.write(requests.get(diction[player]).text)
             data = scraper(diction[player])
             
             st.write(data)
