@@ -74,22 +74,30 @@ Try the hosted version: [CLICK HERE](https://crick-predict.streamlit.app/)
 
 ```
 Crick-Predict/
-├── app.py                 # Main Streamlit application
-├── cricket_workflow.py    # Data scraping and workflow module
-├── numerology.py         # Numerology and biorhythm calculations
-├── debug.py              # Past match analysis page
-├── test.py               # Compatibility wrapper
-├── requirements.txt      # Python dependencies
-├── install_windows.bat   # Windows installer (Batch)
-├── install_windows.ps1   # Windows installer (PowerShell)
-├── run_windows.bat       # Windows run script
-├── install_linux.sh      # Linux installer
-├── run_linux.sh          # Linux run script
-├── install_macos.sh      # macOS installer
-├── run_macos.sh          # macOS run script
-├── INSTALLATION.md       # Detailed installation guide
-└── README.md            # This file
+├── app.py                      # Main Streamlit application
+├── cricket_workflow.py         # Data scraping and workflow module (NEW)
+├── numerology.py               # Numerology and biorhythm calculations
+├── debug.py                    # Past match analysis page
+├── test.py                     # Compatibility wrapper
+├── test_functionality.py       # Automated test suite (NEW)
+├── requirements.txt            # Python dependencies
+├── install_windows.bat         # Windows installer (Batch) (NEW)
+├── install_windows.ps1         # Windows installer (PowerShell) (NEW)
+├── run_windows.bat             # Windows run script (NEW)
+├── install_linux.sh            # Linux installer (NEW)
+├── run_linux.sh                # Linux run script (NEW)
+├── install_macos.sh            # macOS installer (NEW)
+├── run_macos.sh                # macOS run script (NEW)
+├── .github/workflows/          # CI/CD workflows (NEW)
+│   ├── test.yml                # Comprehensive test suite
+│   └── quick-check.yml         # Quick validation on commits
+├── INSTALLATION.md             # Detailed installation guide (NEW)
+├── WORKFLOW_GUIDE.md           # Architecture and workflow docs (NEW)
+├── .gitignore                  # Git ignore patterns
+└── README.md                   # This file
 ```
+
+For detailed workflow and architecture information, see [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md)
 
 ## ✅ Testing
 
