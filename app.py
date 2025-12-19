@@ -1,10 +1,7 @@
 import os
-#os.popen("pip install -r requirements.txt")
 import streamlit as st
-import requests
 import json
-##
-from test import *
+from cricket_workflow import matches, get_player_stats, get_player_match_count
 from numerology import main as numer
 from datetime import datetime
 from debug import debug
@@ -34,6 +31,61 @@ def data_down():
             st.download_button("Download",edit.to_csv(),file_name=f"{st.session_state.match}.csv")
     else:
         st.error("Select match and start to get biorythm values!!")
+def player_stats():
+    """Page to view player statistics."""
+    st.title("🏏 Player Statistics")
+    st.write("Get detailed statistics for any cricket player")
+    
+    player_url = st.text_input(
+        "Enter Player Profile URL",
+        placeholder="https://www.espncricinfo.com/cricketers/player-name-12345",
+        help="Enter the full ESPN Cricinfo player profile URL"
+    )
+    
+    if st.button("Get Player Stats"):
+        if player_url:
+            with st.spinner("Fetching player statistics..."):
+                try:
+                    stats = get_player_stats(player_url)
+                    match_count = get_player_match_count(player_url)
+                    
+                    if stats:
+                        st.success(f"Statistics for {stats.get('name', 'Player')}")
+                        
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            st.subheader("Basic Information")
+                            st.write(f"**Name:** {stats.get('name', 'N/A')}")
+                            st.write(f"**Country:** {stats.get('country', 'N/A')}")
+                            st.write(f"**Playing Role:** {stats.get('playingRole', 'N/A')}")
+                            
+                            if stats.get('dateOfBirth'):
+                                dob = stats['dateOfBirth']
+                                if isinstance(dob, dict):
+                                    st.write(f"**Date of Birth:** {dob.get('date', 'N/A')}/{dob.get('month', 'N/A')}/{dob.get('year', 'N/A')}")
+                                else:
+                                    st.write(f"**Date of Birth:** {dob}")
+                        
+                        with col2:
+                            st.subheader("Playing Style")
+                            st.write(f"**Batting Style:** {stats.get('battingStyle', 'N/A')}")
+                            st.write(f"**Bowling Style:** {stats.get('bowlingStyle', 'N/A')}")
+                        
+                        st.divider()
+                        st.subheader("Match Statistics")
+                        if match_count.get('recent_matches'):
+                            st.write(f"**Recent Matches:** {match_count['recent_matches']}")
+                        else:
+                            st.info("Detailed match statistics not available")
+                            
+                    else:
+                        st.error("Could not retrieve player statistics. Please check the URL.")
+                except Exception as e:
+                    st.error(f"Error fetching player stats: {e}")
+        else:
+            st.warning("Please enter a player profile URL")
+
 def app():
     # Streamlit UI
     st.title("Dream11 Cricket")
@@ -65,6 +117,10 @@ def app():
         if st.session_state.match==None:
             st.success("Cleared!")
 if __name__=="__main__":
-    pg=st.navigation([st.Page(app,title="App",icon="🏏"),st.Page(debug,title="Learn",icon="🎓"),
-                      st.Page(data_down,title="Data",icon="ℹ")])
+    pg=st.navigation([
+        st.Page(app, title="App", icon="🏏"),
+        st.Page(player_stats, title="Player Stats", icon="📊"),
+        st.Page(debug, title="Learn", icon="🎓"),
+        st.Page(data_down, title="Data", icon="ℹ")
+    ])
     pg.run()

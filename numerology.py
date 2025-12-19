@@ -1,20 +1,19 @@
 import time
-import math,pytz
+import math
+import pytz
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib
 from matplotlib import dates
-from datetime import date,timedelta
+from datetime import date, timedelta
 from datetime import datetime as dt
 from bs4 import BeautifulSoup
 import datetime
 import math
-import requests
-from test import *
 import os
 import json
 import streamlit as st
-import urllib
+from cricket_workflow import match11, birth_get, scraper
 
 def convert_utc_timestamp_to_local(utc_datetime, timezone_str):
     """
@@ -72,32 +71,7 @@ def plot_biorhythm_chart(combined_points, dates,name,cycle_label="Combined"):
   #return plt
   #plt.show()
   st.pyplot(fig)
-def load_fname(soup):
-    so = json.loads(soup.find("script", attrs={'id':'__NEXT_DATA__'}).contents[0])
-    try:
-        return so['props']['appPageProps']['data']['player']['fullName']
-    except:
-        return None
-def birth_get(diction={"kyle-simmonds":"https://www.espncricinfo.com/cricketers/kyle-simmonds-550251"}):
-    bdata = {}
-    for player in diction:
-        with st.spinner(f"Getting bdata of {player}"):
-            time.sleep(1)
-            st.write(urllib.requests.urlopen(diction[player]))
-            #st.write(requests.get(diction[player]).text)
-            data = scraper(diction[player])
-            
-            st.write(data)
-            soup = BeautifulSoup(data, "html.parser")
-            so = json.loads(soup.find("script", attrs={'id': '__NEXT_DATA__'}).contents[0])
-            bdata.update({so['props']["appPageProps"]["data"]['player']['fullName']:
-                              so['props']["appPageProps"]["data"]['player']['dateOfBirth']})
-            st.session_state.names.update({so['props']["appPageProps"]["data"]['player']['longName']:
-                                               so['props']["appPageProps"]["data"]['player']['fullName']})
-    #ic(bdata)
-    return bdata
 
-    #print(f"DOB: {dob_text}")
 
 
 def usedata(name,n):
