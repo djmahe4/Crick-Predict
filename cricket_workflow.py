@@ -9,7 +9,13 @@ import time
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
-import streamlit as st
+
+# Optional streamlit import
+try:
+    import streamlit as st
+    HAS_STREAMLIT = True
+except ImportError:
+    HAS_STREAMLIT = False
 
 
 class CricketDataScraper:
@@ -159,7 +165,7 @@ def match11(url='https://www.espncricinfo.com/series/csa-4-day-series-division-1
     playerd = match11sub(url)
     print(playerd)
     if playerd == {} and cond == "match-squads":
-        if 'st' in dir():
+        if HAS_STREAMLIT:
             st.write("Squads not available")
         raise Exception("Squad not found")
     elif playerd == {}:
@@ -360,7 +366,7 @@ def birth_get(player_dict):
     
     for player_name, player_url in player_dict.items():
         try:
-            if 'st' in dir():
+            if HAS_STREAMLIT:
                 with st.spinner(f"Getting birth data of {player_name}"):
                     time.sleep(0.5)  # Small delay to avoid overwhelming the server
                     full_name, dob, long_name = get_player_birth_data(player_url)
@@ -378,7 +384,7 @@ def birth_get(player_dict):
             continue
     
     # Store names mapping in session state if streamlit is available
-    if 'st' in dir() and hasattr(st, 'session_state'):
+    if HAS_STREAMLIT and hasattr(st, 'session_state'):
         st.session_state.names.update(names_mapping)
     
     return bdata

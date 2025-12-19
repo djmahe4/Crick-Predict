@@ -12,7 +12,16 @@ def reset():
     st.session_state.url=None
     st.session_state.names = {}
 def data_down():
-
+    # Initialize session state if not exists
+    if 'playerd' not in st.session_state:
+        st.session_state.playerd = {'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
+    if 'url' not in st.session_state:
+        st.session_state.url = None
+    if 'names' not in st.session_state:
+        st.session_state.names = {}
+    if 'match' not in st.session_state:
+        st.session_state.match = None
+    
     if st.session_state.playerd!={'player':[],'prev':[],'today':[],'tom':[],'dream':[]}:
         st.write("/".join(st.session_state.url.split("/")[:-1]) + "/match-impact-player")
         try:
@@ -87,17 +96,38 @@ def player_stats():
             st.warning("Please enter a player profile URL")
 
 def app():
+    # Initialize session state
+    if 'match' not in st.session_state:
+        st.session_state.match = None
+    if 'playerd' not in st.session_state:
+        st.session_state.playerd = {'player':[],'prev':[],'today':[],'tom':[],'dream':[]}
+    if 'url' not in st.session_state:
+        st.session_state.url = None
+    if 'names' not in st.session_state:
+        st.session_state.names = {}
+    
     # Streamlit UI
     st.title("Dream11 Cricket")
     st.write(datetime.now())
     #st.write(":red[Warning!Local time and time of the website may vary, verify the match dates carefully]")
-    contents=matches()
+    
+    try:
+        contents = matches()
+    except Exception as e:
+        st.error(f"Error fetching matches: {e}")
+        st.info("Please check your internet connection and try again.")
+        return
     #file=open("leagues.json","r",encoding="utf-8")
     #contents=json.load(file)
     #file.close()
-    choices=contents
+    
+    if not contents:
+        st.warning("No matches available at the moment.")
+        return
+    
+    choices = contents
     #print(choices)
-    choice=st.selectbox("Match",list(choices.keys()))
+    choice = st.selectbox("Match", list(choices.keys()))
     print(choice)
     print()
     match_url=choices[choice]
