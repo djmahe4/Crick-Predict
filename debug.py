@@ -1,10 +1,7 @@
 import os
-#os.popen("pip install -r requirements.txt")
 import streamlit as st
-import requests
-##
 import json
-from test import debug_matches
+from cricket_workflow import debug_matches
 from datetime import datetime, timezone
 from bs4 import BeautifulSoup
 from numerology import main as numer
